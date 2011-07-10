@@ -168,6 +168,13 @@ class RailsRoutingTest(DefaultRoutingTest):
                              resources.User,
                              id='1', methods=MEMBER_METHODS, format='.json')
 
+    def test_show_with_format_sanity_check(self):
+        # Sanity check for render-to-response cycle
+        from django.contrib.auth.models import User
+        User.objects.create_user('joe', 'joe@example.com', 's3cret')
+        response = self.client.get('/users-rails/1.json')
+        self.assertEqual(response.status_code, 200)
+
     def test_new(self):
         self.assertEqual(reverse('UserRails#new'), '/users-rails/new')
         self.assert_resolves('/users-rails/new', resources.User,

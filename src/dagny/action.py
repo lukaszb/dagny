@@ -194,7 +194,10 @@ class BoundAction(object):
         return "<BoundAction '%s#%s' at 0x%x>" % (self.resource_name, self.action.name, id(self))
 
     def __call__(self):
-        response = self.action.method(self.resource, *self.resource.args)
+        args = [arg for arg in self.resource.args]
+        if 'id' in self.resource.params:
+            args.append(self.resource.params['id'])
+        response = self.action.method(self.resource, *args)
         if response:
             return response
         return self.render()
